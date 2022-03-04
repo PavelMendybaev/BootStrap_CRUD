@@ -37,16 +37,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/index").permitAll()
-                .antMatchers( HttpMethod.GET , "/admin").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
                 .antMatchers( HttpMethod.GET , "/user/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
-
-
                 .antMatchers( HttpMethod.GET , "/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .antMatchers( HttpMethod.POST , "/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .antMatchers( HttpMethod.DELETE , "/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                .successHandler(new SuccessUserHandler())
                 .loginPage("/login")
                 .permitAll()
                 .and()

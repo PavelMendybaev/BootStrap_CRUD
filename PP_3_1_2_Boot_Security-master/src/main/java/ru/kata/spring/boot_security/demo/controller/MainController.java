@@ -72,10 +72,13 @@ public class MainController {
         return "user";
 
     }
+    @GetMapping("/user/users")
+    public String showUser( ModelMap model){
 
 
+        return "users";
 
-
+    }
 
 
 
