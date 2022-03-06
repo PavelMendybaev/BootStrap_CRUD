@@ -35,6 +35,11 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping(value = "/admin/add")
+    public String getAdd(){
+        return "admin/admin_add";
+    }
+
 
     @GetMapping(value = "/login" )
     public String getLogin(){

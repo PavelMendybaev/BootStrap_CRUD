@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="/assets/style.css">
-    <title>Menu</title>
+    <title>admin_add</title>
 </head>
 <body>
 
@@ -30,19 +30,22 @@
 
         </div>
 
-        <div >
-
-            <div class="container-fluid" >
-                <div class="container">
-                    <h2><a th:href="@{/admin}">users</a> <a th:href="@{/admin/add}">add user</a></h2>
-                </div>
+        <div class="container-fluid" >
+            <div class="container">
+                <h2><a th:href="@{/admin}">users</a> <a th:href="@{/admin/add}">add user</a></h2>
+            </div>
 
 
-
-                <th:block th:each="user : ${users}">
-                    <a th:href="@{user/{id}(id = ${user.getId()})}" th:text="${user.getName()}"></a>
-                    <br/>
-                </th:block>
+            <div >
+                        <label>please Add user</label>
+                        <br/>
+                        <form th:action="@{/admin}" th:method="POST">
+                            <div><input placeholder="login"  type="text" th:name="username"/></div>
+                            <div><input placeholder="password" type="text" th:name="password"/></div>
+                            <div><input placeholder="role" type="text" th:name="role"/></div>
+                            <br/>
+                            <div><input type="submit" value="Add user"/></div>
+                        </form>
 
             </div>
 
