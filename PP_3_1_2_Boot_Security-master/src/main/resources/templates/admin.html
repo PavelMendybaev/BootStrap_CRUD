@@ -7,21 +7,23 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="styles/style.css">
     <title>Menu</title>
 </head>
 <body>
 
-<header th:insert="admin/shapka :: header">
 
-</header>
-
-
+<div class="bg-dark text-light container-fluid">
+    <h2  th:text="${myUser.getUsername() +  myUser.getAuthorities()}"> </h2>
+</div>
 
 
 <div class="row">
-    <div th:insert="admin/shapka :: left_meny" class="col-2 bg-light">
-
+    <div class="bg-light container-fluid col-2">
+        <div class="left-men">
+            <a th:href="@{/admin}"><input class="btn-primary button-left" type="button" style="text-decoration: none" value="ADMIN"/></a>
+            <a th:href="@{/user/users}"><input class="btn-primary button-left" type="button" style="text-decoration: none" value="USER"/></a>
+        </div>
     </div>
 
     <div class="col container-fluid">
@@ -32,17 +34,37 @@
 
         <div >
 
+
+
             <div class="container-fluid" >
                 <div class="container">
-                    <h2><a th:href="@{/admin}">users</a> <a th:href="@{/admin/add}">add user</a></h2>
+                    <h2><a th:href="@{/admin}">users</a> &nbsp;&nbsp;&nbsp;<a th:href="@{/admin/add}">add user</a></h2>
                 </div>
 
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td>name</td>
+                            <td>roles</td>
+                            <td>edit</td>
+                            <td>delete</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="user : ${users}">
+                            <tr>
+                                <td><h5 th:text="${user.getId()}"></h5></td>
+                                <td><h5 th:text="${user.getName()}"></h5></td>
+                                <td><h5 th:text="${user.getRole()}"></h5></td>
+                                <td><a th:href="@{/admin/edit/{id}(id = ${user.getId()})}"><input class="btn-primary" type="button" style="text-decoration: none" value="edit"/></a></td>
+                                <td><a th:href="@{/admin/delete/{id}(id = ${user.getId()})}"><input class="btn-primary" type="button" style="text-decoration: none" value="deleted"/></a></td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
 
 
-                <th:block th:each="user : ${users}">
-                    <a th:href="@{user/{id}(id = ${user.getId()})}" th:text="${user.getName()}"></a>
-                    <br/>
-                </th:block>
 
             </div>
 

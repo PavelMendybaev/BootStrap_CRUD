@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -38,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/index").permitAll()
                 .antMatchers( HttpMethod.GET , "/user/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
+
                 .antMatchers( HttpMethod.GET , "/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .antMatchers( HttpMethod.POST , "/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .antMatchers( HttpMethod.DELETE , "/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
@@ -74,5 +76,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
     }
 }

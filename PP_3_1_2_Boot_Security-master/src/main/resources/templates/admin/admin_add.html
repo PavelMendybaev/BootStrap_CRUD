@@ -7,21 +7,27 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="/assets/style.css">
+    <link  rel="stylesheet" href="styles/style.css" >
     <title>admin_add</title>
 </head>
 <body>
 
-<header th:insert="admin/shapka :: header">
 
-</header>
+
+<div class="bg-dark text-light container-fluid">
+    <h2  th:text="${myUser.getUsername() +  myUser.getAuthorities()}"> </h2>
+</div>
+
 
 
 
 
 <div class="row">
-    <div th:insert="admin/shapka :: left_meny" class="col-2 bg-light">
-
+    <div class="bg-light container-fluid col-2">
+        <div class="left-men">
+            <a th:href="@{/admin}"><input class="btn-primary button-left" type="button" style="text-decoration: none" value="ADMIN"/></a>
+            <a th:href="@{/user/users}"><input class="btn-primary button-left" type="button" style="text-decoration: none" value="USER"/></a>
+        </div>
     </div>
 
     <div class="col container-fluid">
@@ -32,17 +38,21 @@
 
         <div class="container-fluid" >
             <div class="container">
-                <h2><a th:href="@{/admin}">users</a> <a th:href="@{/admin/add}">add user</a></h2>
+                <h2><a th:href="@{/admin}">users</a> &nbsp;&nbsp;&nbsp;<a th:href="@{/admin/add}">add user</a></h2>
             </div>
 
 
-            <div >
-                        <label>please Add user</label>
-                        <br/>
-                        <form th:action="@{/admin}" th:method="POST">
-                            <div><input placeholder="login"  type="text" th:name="username"/></div>
-                            <div><input placeholder="password" type="text" th:name="password"/></div>
-                            <div><input placeholder="role" type="text" th:name="role"/></div>
+            <div  >
+                        <form th:action="@{/admin/add}" th:method="POST">
+                            <div><label>
+                                <input placeholder="login"  type="text" th:name="username"/>
+                            </label></div>
+                            <div><label>
+                                <input placeholder="password" type="text" th:name="password"/>
+                            </label></div>
+                            <div><label>
+                                <input placeholder="role" type="text" th:name="role"/>
+                            </label></div>
                             <br/>
                             <div><input type="submit" value="Add user"/></div>
                         </form>
@@ -50,6 +60,7 @@
             </div>
 
         </div>
+
 
 
 

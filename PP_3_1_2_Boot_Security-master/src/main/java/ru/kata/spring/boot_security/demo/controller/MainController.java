@@ -1,8 +1,13 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,6 +28,8 @@ public class MainController {
     private PasswordEncoder passwordEncoder;
 
 
+
+
     @Autowired
     public MainController(UserService userService) {
         this.userService = userService;
@@ -36,61 +43,66 @@ public class MainController {
     }
 
     @GetMapping(value = "/admin/add")
-    public String getAdd(){
+    public String getAdd(ModelMap model){
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("myUser" , myUser);
         return "admin/admin_add";
     }
 
 
-    @GetMapping(value = "/login" )
-    public String getLogin(){
-        return "login";
-    }
-
-    @PreAuthorize("hasAnyAuthority('developers:write')")
-    @PostMapping(value = "/admin" )
-    public String PostEnter(@RequestParam("username") String name ,
+    @PostMapping(value = "/admin/add")
+    public String PostAdd(@RequestParam("username") String name ,
                             @RequestParam("password") String password ,
                             @RequestParam("role") String role ,
                             ModelMap model ) {
         userService.save(new User(name , passwordEncoder.encode(password) ,Role.valueOf(role)));
 
         List<User> users = userService.users();
+
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("myUser" , myUser);
         model.addAttribute("users", users);
         return "admin";
     }
+
+
+
+    @GetMapping(value = "/login" )
+    public String getLogin(){
+
+
+        return "login";
+    }
+
 
     @GetMapping(value = "/admin" )
     public String getAdmin(ModelMap model){
 
         List<User> users = userService.users();
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         model.addAttribute("users", users);
+        model.addAttribute("myUser" , myUser);
+
+
         return "admin";
     }
 
 
-
-    @GetMapping("/user/{id}")
-    public String showUser(@PathVariable("id") Long id , ModelMap model){
-
-        User user = userService.getUserById(id);
-        model.addAttribute("user" , user);
-        return "user";
-
-    }
     @GetMapping("/user/users")
     public String showUser( ModelMap model){
-
-
+        List<User> users = userService.users();
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("myUser" , myUser);
+        model.addAttribute("users", users);
         return "users";
 
     }
 
 
 
-    @RequestMapping(value = "/user" , method = RequestMethod.GET)
-    public String getUser(){
-        return "user";
-    }
+
+
 
     @RequestMapping(value = "/user/{id}" , method = RequestMethod.POST)
     public String getUser(@PathVariable("id") Long id ,@RequestParam("new_username") String new_name , ModelMap model){
@@ -109,6 +121,57 @@ public class MainController {
         userService.deleteById(id);
 
         return "delete";
+    }
+
+    @GetMapping(value = "/admin/edit/{id}" )
+    public String getEdit(@PathVariable("id") Long id,ModelMap model){
+        List<User> users = userService.users();
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("myUser" , myUser);
+        model.addAttribute("users", users);
+        model.addAttribute("id_user" , id);
+        return "admin/edit_user";
+    }
+
+    @PostMapping(value = "/admin/edit/{id}")
+    public String Postedit(@PathVariable("id") Long id,
+                           @RequestParam("username") String name ,
+                           @RequestParam("password") String password ,
+                           @RequestParam("role") String role ,
+                          ModelMap model ) {
+
+
+        User user = userService.getUserById(id);
+        user.setName(name);
+        user.setPassword(password);
+        user.setRole(Role.valueOf(role));
+        userService.save(user);
+
+
+        List<User> users = userService.users();
+
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("myUser" , myUser);
+        model.addAttribute("users", users);
+
+        return "admin";
+    }
+
+
+    @GetMapping(value = "/admin/delete/{id}" )
+    public String getDelete(@PathVariable("id") Long id,ModelMap model){
+        userService.deleteById(id);
+        return "delete";
+    }
+
+    @GetMapping("/user")
+    public String getUser( ModelMap model){
+        List<User> users = userService.users();
+        UserDetails myUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("myUser" , myUser);
+        model.addAttribute("users", users);
+        return "user";
+
     }
 
 
